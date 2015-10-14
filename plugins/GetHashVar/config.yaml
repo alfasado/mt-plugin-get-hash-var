@@ -16,4 +16,5 @@ tags:
         GetHashVar: $gethashvar::GetHashVar::Tags::_hdlr_get_hash_var
         GetHashKey: $gethashvar::GetHashVar::Tags::_hdlr_get_hash_key
         GetArrayVar: $gethashvar::GetHashVar::Tags::_hdlr_get_array_var
-        ArrayJoin: $gethashvar::GetHashVar::Tags::_hdlr_array_join
+        GetArrayJoin: $gethashvar::GetHashVar::Tags::_hdlr_array_join
+        GetArrayRand: $gethashvar::GetHashVar::Tags::_hdlr_array_rand

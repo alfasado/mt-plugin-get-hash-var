@@ -81,4 +81,26 @@ sub _hdlr_get_hash_key {
     return '';
 }
 
+sub _hdlr_array_join {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ 'name' } || return '';
+    my $glue  = $args->{ 'glue ' } || '';
+    my $array = $ctx->stash( 'vars' )->{ $name };
+    if ( ( ref $array ) eq 'ARRAY' ) {
+        return join( $glue, $array );
+    }
+    return '';
+}
+
+sub _hdlr_array_rand {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ 'name' } || return '';
+    my $array = $ctx->stash( 'vars' )->{ $name };
+    if ( ( ref $array ) eq 'ARRAY' ) {
+        my $count = @$array; 
+        my $num = int( rand( $count ) );
+        return @$array[ $num ];
+    }
+}
+
 1;
