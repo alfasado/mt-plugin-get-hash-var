@@ -37,11 +37,17 @@ sub _hdlr_in_array {
 sub _hdlr_get_array_var {
     my ( $ctx, $args, $cond ) = @_;
     my $name = $args->{ 'name' } || return '';
-    my $num = $args->{ 'num' } || return '';
+    my $num = $args->{ 'num' };
+    my $index = $args->{ 'index' };
+    if ( (! defined( $index ) ) && (! $num ) ) {
+        return '';
+    }
     my $array = $ctx->stash( 'vars' )->{ $name };
     if ( ( ref $array ) eq 'ARRAY' ) {
-        $num--;
-        return @$array[ $num ];
+        if ( $num ) {
+            $index = $num - 1;
+        }
+        return @$array[ $index ];
     }
 }
 
