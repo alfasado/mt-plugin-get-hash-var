@@ -11,6 +11,8 @@ tags:
         IfVarExists?: $gethashvar::GetHashVar::Tags::_hdlr_value_exists
         IfValueExists?: $gethashvar::GetHashVar::Tags::_hdlr_value_exists
         IfInArray?: $gethashvar::GetHashVar::Tags::_hdlr_in_array
+        IfIsInArray?: $gethashvar::GetHashVar::Tags::_hdlr_in_array
     function:
         GetHashVar: $gethashvar::GetHashVar::Tags::_hdlr_get_hash_var
         GetHashKey: $gethashvar::GetHashVar::Tags::_hdlr_get_hash_key
+        GetArrayVar: $gethashvar::GetHashVar::Tags::_hdlr_get_array_var

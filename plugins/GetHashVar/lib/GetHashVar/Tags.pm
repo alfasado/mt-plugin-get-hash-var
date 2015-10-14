@@ -34,6 +34,17 @@ sub _hdlr_in_array {
     return 0;
 }
 
+sub _hdlr_get_array_var {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ 'name' } || return '';
+    my $num = $args->{ 'num' } || return '';
+    my $array = $ctx->stash( 'vars' )->{ $name };
+    if ( ( ref $array ) eq 'ARRAY' ) {
+        $num--;
+        return @$array[ $num ];
+    }
+}
+
 sub _hdlr_get_hash_var {
     my ( $ctx, $args, $cond ) = @_;
     my $key = $args->{ 'key' } || return '';
