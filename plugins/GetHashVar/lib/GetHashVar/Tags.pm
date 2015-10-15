@@ -107,6 +107,7 @@ sub _filter_json2vars {
     my ( $json, $name, $ctx ) = @_;
     my $array = MT::Util::from_json( $json );
     $ctx->stash( 'vars' )->{ $name } = $array;
+    return '';
 }
 
 sub _filter_vars2json {
