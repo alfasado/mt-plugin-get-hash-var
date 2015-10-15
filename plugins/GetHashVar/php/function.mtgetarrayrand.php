@@ -5,7 +5,7 @@ function smarty_function_mtgetarrayrand ( $args, &$ctx ) {
     $array = $ctx->__stash[ 'vars' ][ $name ];
     if ( is_array( $array ) ) {
         $id = array_rand( $array );
-        return $array( $id );
+        return $array[ $id ];
     }
 }
 ?>
