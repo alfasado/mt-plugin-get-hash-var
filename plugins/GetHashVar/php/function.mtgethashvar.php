@@ -4,7 +4,21 @@ function smarty_function_mtgethashvar ( $args, &$ctx ) {
     if ( isset( $args[ 'key' ] ) ) $key = $args[ 'key' ];
     if ( (! $name ) || (! $key ) ) return '';
     $hash = $ctx->__stash[ 'vars' ][ $name ];
+    if ( strpos( $key, ':' ) !== FALSE ) {
+        $keys = str_getcsv( $key, ':' );
+    }
     if ( is_array( $hash ) ) {
+        if ( $keys ) {
+            $value = $hash;
+            foreach( $keys as $key ) {
+                if ( strpos( $key, 'Array.' ) === 0 ) {
+                    $key = str_replace( 'Array.', '', $key );
+                    $key = $ctx->__stash[ 'vars' ][ $key ];
+                }
+                $value = $value[ $key ];
+            }
+            return $value;
+        }
         if ( isset( $hash[ $key ] ) ) {
             return $hash[ $key ];
         }

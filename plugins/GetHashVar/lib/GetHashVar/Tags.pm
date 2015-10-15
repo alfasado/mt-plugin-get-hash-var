@@ -18,6 +18,43 @@ sub _hdlr_value_exists {
     return 0;
 }
 
+sub _hdlr_is_scalar {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ 'name' } || return 0;
+    my $var = $ctx->stash( 'vars' )->{ $name };
+    if ( defined( $var ) ) {
+        if ( ref $var ) {
+            return 0;
+        }
+        return 1;
+    }
+    return 0;
+}
+
+sub _hdlr_is_array {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ 'name' } || return 0;
+    my $var = $ctx->stash( 'vars' )->{ $name };
+    if ( defined( $var ) ) {
+        if ( ( ref $var ) eq 'ARRAY' ) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+sub _hdlr_is_hash {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ 'name' } || return 0;
+    my $var = $ctx->stash( 'vars' )->{ $name };
+    if ( defined( $var ) ) {
+        if ( ( ref $var ) eq 'HASH' ) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 sub _hdlr_in_array {
     my ( $ctx, $args, $cond ) = @_;
     my $name = $args->{ 'name' } || return '';
@@ -57,6 +94,13 @@ sub _hdlr_get_hash_var {
     my $name = $args->{ 'name' } || return '';
     my $hash = $ctx->stash( 'vars' )->{ $name };
     if ( ( ref $hash ) eq 'HASH' ) {
+        if ( ( ref $key ) && ( ( ref $key ) eq 'ARRAY' ) ) {
+            my $value = $hash;
+            for my $_key ( @$key ) {
+                $value = $value->{ $_key };
+            }
+            return $value;
+        }
         return $hash->{ $key };
     }
     return '';
@@ -101,6 +145,21 @@ sub _hdlr_array_rand {
         my $num = int( rand( $count ) );
         return @$array[ $num ];
     }
+}
+
+sub _hdlr_split_var {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ 'name' } || return '';
+    my $glue = $args->{ 'glue' } || ',';
+    my $var = $ctx->stash( 'vars' )->{ $name };
+    if (! $var ) {
+        $var = $args->{ var };
+    }
+    if ( $var ) {
+        my @vars = split( /$glue/, $var );
+        $ctx->stash( 'vars' )->{ $name } = \@vars;
+    }
+    return '';
 }
 
 sub _filter_json2vars {
