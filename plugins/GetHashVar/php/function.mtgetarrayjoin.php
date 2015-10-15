@@ -1,5 +1,5 @@
 <?php
-function smarty_function_mtarrayjoin ( $args, &$ctx ) {
+function smarty_function_mtgetarrayjoin ( $args, &$ctx ) {
     if ( isset( $args[ 'name' ] ) ) $name = $args[ 'name' ];
     if ( isset( $args[ 'glue' ] ) ) $glue = $args[ 'glue' ];
     if (! $name ) return '';
