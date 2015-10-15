@@ -3,7 +3,7 @@ key: gethashvar
 name: GetHashVar
 author_name: Alfasado Inc.
 author_link: http://alfasado.net/
-version: 0.3
+version: 0.4
 description: Get template vars from ARRAY or HASH.
 tags:
     block:
@@ -18,3 +18,6 @@ tags:
         GetArrayVar: $gethashvar::GetHashVar::Tags::_hdlr_get_array_var
         GetArrayJoin: $gethashvar::GetHashVar::Tags::_hdlr_array_join
         GetArrayRand: $gethashvar::GetHashVar::Tags::_hdlr_array_rand
+    modifier:
+        json2vars: $gethashvar::GetHashVar::Tags::_filter_json2vars
+        vars2json: $gethashvar::GetHashVar::Tags::_filter_vars2json

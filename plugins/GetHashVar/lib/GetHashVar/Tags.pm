@@ -103,4 +103,14 @@ sub _hdlr_array_rand {
     }
 }
 
+sub _filter_json2vars {
+    my ( $json, $arg, $ctx ) = @_;
+    return MT::Util::from_json( $json );
+}
+
+sub _filter_vars2json {
+    my ( $array, $arg, $ctx ) = @_;
+    return MT::Util::to_json( $array );
+}
+
 1;
