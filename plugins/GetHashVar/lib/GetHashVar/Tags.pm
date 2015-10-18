@@ -177,6 +177,18 @@ sub _hdlr_array_shuffle {
     return '';
 }
 
+sub _hdlr_array_reverse {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ 'name' } || return '';
+    my $var = $ctx->stash( 'vars' )->{ $name };
+    if (! $var ) {
+        return '';
+    }
+    my @vars = reverse( @$var );
+    $ctx->stash( 'vars' )->{ $name } = \@vars;
+    return '';
+}
+
 sub _filter_json2vars {
     my ( $json, $name, $ctx ) = @_;
     my $array = MT::Util::from_json( $json );
