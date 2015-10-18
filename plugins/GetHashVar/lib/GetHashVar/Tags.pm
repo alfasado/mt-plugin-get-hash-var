@@ -162,6 +162,21 @@ sub _hdlr_split_var {
     return '';
 }
 
+sub _hdlr_array_shuffle {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ 'name' } || return '';
+    my $var = $ctx->stash( 'vars' )->{ $name };
+    if (! $var ) {
+        return '';
+    }
+    eval "require List::Util;";
+    unless ( $@ ) {
+        my @vars = List::Util::shuffle( @$var );
+        $ctx->stash( 'vars' )->{ $name } = \@vars;
+    }
+    return '';
+}
+
 sub _filter_json2vars {
     my ( $json, $name, $ctx ) = @_;
     my $array = MT::Util::from_json( $json );
@@ -172,6 +187,10 @@ sub _filter_json2vars {
 sub _filter_vars2json {
     my ( $array, $arg, $ctx ) = @_;
     return MT::Util::to_json( $array );
+}
+
+sub _filter_mtignore {
+    return '';
 }
 
 1;

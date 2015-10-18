@@ -23,6 +23,7 @@ tags:
         GetArrayRand: $gethashvar::GetHashVar::Tags::_hdlr_array_rand
         SplitVar: $gethashvar::GetHashVar::Tags::_hdlr_split_var
         DeleteVars: $gethashvar::GetHashVar::Tags::_hdlr_delete_vars
+        ArrayShuffle: $gethashvar::GetHashVar::Tags::_hdlr_array_shuffle
     modifier:
         json2vars: $gethashvar::GetHashVar::Tags::_filter_json2vars
         vars2json: $gethashvar::GetHashVar::Tags::_filter_vars2json
