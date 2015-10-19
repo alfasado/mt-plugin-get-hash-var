@@ -152,12 +152,17 @@ sub _hdlr_split_var {
     my $name = $args->{ 'name' } || return '';
     my $glue = $args->{ 'glue' } || ',';
     my $var = $ctx->stash( 'vars' )->{ $name };
+    my $set = $args->{ 'set' };
     if (! $var ) {
         $var = $args->{ var };
     }
     if ( $var ) {
         my @vars = split( /$glue/, $var );
-        $ctx->stash( 'vars' )->{ $name } = \@vars;
+        if ( $set ) {
+            $ctx->stash( 'vars' )->{ $set } = \@vars;
+        } else {
+            $ctx->stash( 'vars' )->{ $name } = \@vars;
+        }
     }
     return '';
 }
