@@ -189,6 +189,30 @@ sub _hdlr_array_reverse {
     return '';
 }
 
+sub _hdlr_set_published_entry_ids {
+    my ( $ctx, $args, $cond ) = @_;
+    my $entry_ids = $args->{ 'entry_ids' } || return '';
+    if ( ( ref $entry_ids ) eq 'ARRAY' ) {
+        my $entry_ids_published = $ctx->{__stash}{ entry_ids_published } || {};
+        for my $id ( @$entry_ids ) {
+            $entry_ids_published->{ $id } = 1;
+        }
+        $ctx->{ __stash }{ entry_ids_published } = $entry_ids_published;
+    }
+    return '';
+}
+
+sub _hdlr_entries_entry_ids {
+    my ( $ctx, $args, $cond ) = @_;
+    my $terms = $ctx->{ terms };
+    my $entry_ids = $args->{ entry_ids };
+    if ( ( ref $entry_ids ) eq 'ARRAY' ) {
+        my @ids = @$entry_ids;
+        $terms->{ id } = \@ids;
+    }
+    return '';
+}
+
 sub _filter_json2vars {
     my ( $json, $name, $ctx ) = @_;
     my $array = MT::Util::from_json( $json );

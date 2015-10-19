@@ -25,7 +25,16 @@ tags:
         DeleteVars: $gethashvar::GetHashVar::Tags::_hdlr_delete_vars
         ArrayShuffle: $gethashvar::GetHashVar::Tags::_hdlr_array_shuffle
         ArrayReverse: $gethashvar::GetHashVar::Tags::_hdlr_array_reverse
+        SetPublishedEntryIds: $gethashvar::GetHashVar::Tags::_hdlr_set_published_entry_ids
+        SetPublishedPageIds: $gethashvar::GetHashVar::Tags::_hdlr_set_published_entry_ids
     modifier:
         json2vars: $gethashvar::GetHashVar::Tags::_filter_json2vars
         vars2json: $gethashvar::GetHashVar::Tags::_filter_vars2json
         mtignore: $gethashvar::GetHashVar::Tags::_filter_mtignore
+    filters:
+        Entries:
+            entry_ids:
+                handler: $gethashvar::GetHashVar::Tags::_hdlr_entries_entry_ids
+        Pages:
+            page_ids:
+                handler: $gethashvar::GetHashVar::Tags::_hdlr_entries_entry_ids
