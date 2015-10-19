@@ -1,6 +1,13 @@
 package GetHashVar::Tags;
 use strict;
-use warnings;
+no warnings 'redefine';
+use Data::Dumper;
+{
+    package Data::Dumper;
+    sub qquote { return shift; }
+}
+$Data::Dumper::Useperl = 1;
+$Data::Dumper::Maxdepth = 10;
 
 sub _hdlr_key_exists {
     my $value = _hdlr_get_hash_var( @_ );
@@ -222,6 +229,20 @@ sub _hdlr_set_published_entry_ids {
         $ctx->{ __stash }{ entry_ids_published } = $entry_ids_published;
     }
     return '';
+}
+
+sub _hdlr_get_vardump {
+    my ( $ctx, $args, $cond ) = @_;
+    my $vars = $ctx->{ __stash }{ vars } ||= {};
+    my $dump;
+    if ( my $name = $args->{ name } ) {
+        $dump = "${name} => \n" . ( Dumper $vars->{ $name } );
+    } else {
+        $dump = Dumper $vars;
+    }
+    $dump = MT::Util::encode_html( $dump );
+    $dump = '<pre><code style="overflow:auto">' . $dump . '</code></pre>';
+    return $dump;
 }
 
 sub _hdlr_entries_entry_ids {
