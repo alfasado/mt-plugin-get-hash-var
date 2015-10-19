@@ -104,7 +104,12 @@ sub _hdlr_get_hash_var {
         if ( ( ref $key ) && ( ( ref $key ) eq 'ARRAY' ) ) {
             my $value = $hash;
             for my $_key ( @$key ) {
-                $value = $value->{ $_key };
+                if ( ( ref $value ) &&
+                    ( ( ref $value ) eq 'ARRAY' ) ) {
+                    $value = @$value[ $_key ];
+                } else {
+                    $value = $value->{ $_key };
+                }
             }
             return $value;
         }
