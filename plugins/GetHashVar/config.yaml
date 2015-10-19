@@ -25,6 +25,7 @@ tags:
         DeleteVars: $gethashvar::GetHashVar::Tags::_hdlr_delete_vars
         ArrayShuffle: $gethashvar::GetHashVar::Tags::_hdlr_array_shuffle
         ArrayReverse: $gethashvar::GetHashVar::Tags::_hdlr_array_reverse
+        ArrayUnique: $gethashvar::GetHashVar::Tags::_hdlr_array_unique
         SetPublishedEntryIds: $gethashvar::GetHashVar::Tags::_hdlr_set_published_entry_ids
         SetPublishedPageIds: $gethashvar::GetHashVar::Tags::_hdlr_set_published_entry_ids
     modifier:

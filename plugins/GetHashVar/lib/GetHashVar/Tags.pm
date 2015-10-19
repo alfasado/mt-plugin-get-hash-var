@@ -189,6 +189,23 @@ sub _hdlr_array_reverse {
     return '';
 }
 
+sub _hdlr_array_unique {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ 'name' } || return '';
+    my $var = $ctx->stash( 'vars' )->{ $name };
+    if (! $var ) {
+        return '';
+    }
+    my @_var;
+    for my $value ( @$var ) {
+        if (! grep( /^$value$/, @_var ) ) {
+            push( @_var, $value );
+        }
+    }
+    $ctx->stash( 'vars' )->{ $name } = \@_var;
+    return '';
+}
+
 sub _hdlr_set_published_entry_ids {
     my ( $ctx, $args, $cond ) = @_;
     my $entry_ids = $args->{ 'entry_ids' } || return '';
