@@ -277,6 +277,14 @@ sub _hdlr_delete_vars {
     }
 }
 
+sub _hdlr_append_var {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ 'name' } || return '';
+    my $var = $args->{ 'var' };
+    $ctx->stash( 'vars' )->{ $name }->{ $var } = $ctx->stash( 'vars' )->{ $var };
+    return '';
+}
+
 sub _filter_json2vars {
     my ( $json, $name, $ctx ) = @_;
     my $array = MT::Util::from_json( $json );
