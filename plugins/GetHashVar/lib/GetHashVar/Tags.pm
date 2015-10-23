@@ -261,6 +261,22 @@ sub _hdlr_entries_entry_ids {
     return '';
 }
 
+sub _hdlr_delete_vars {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ 'name' } || return '';
+    if ( ( ref $name ) ne 'ARRAY' ) {
+        if ( $name =~ m/\s/ ) {
+            my @names = split( /\s{1,}/, $name );
+            $name = \@names;
+        } else {
+            $name = [ $name ];
+        }
+    }
+    for my $n ( @$name ) {
+        delete( $ctx->stash( 'vars' )->{ $n } );
+    }
+}
+
 sub _filter_json2vars {
     my ( $json, $name, $ctx ) = @_;
     my $array = MT::Util::from_json( $json );
