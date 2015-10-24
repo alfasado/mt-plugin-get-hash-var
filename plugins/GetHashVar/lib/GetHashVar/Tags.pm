@@ -372,7 +372,11 @@ sub _filter_vars2json {
 }
 
 sub _filter_mtignore {
-    return '';
+    my ( $text, $arg, $ctx ) = @_;
+    if ( $arg ) {
+        return '';
+    }
+    return $text;
 }
 
 1;
