@@ -8,6 +8,15 @@ use Data::Dumper;
 }
 $Data::Dumper::Useperl = 1;
 $Data::Dumper::Maxdepth = 10;
+use Time::HiRes qw( usleep );
+
+sub _hdlr_usleep {
+    my ( $ctx, $args, $cond ) = @_;
+    my $microseconds = $args->{ 'microseconds' } || return '';
+    $microseconds = $microseconds * 1;
+    usleep( $microseconds * 1000 );
+    return '';
+}
 
 sub _hdlr_key_exists {
     my $value = _hdlr_get_hash_var( @_ );
@@ -86,12 +95,25 @@ sub _hdlr_get_array_var {
     if ( (! defined( $index ) ) && (! $num ) ) {
         return '';
     }
+    if ( $num ) {
+        $index = $num - 1;
+    }
     my $array = $ctx->stash( 'vars' )->{ $name };
     if ( ( ref $array ) eq 'ARRAY' ) {
-        if ( $num ) {
-            $index = $num - 1;
-        }
         return @$array[ $index ];
+    } elsif ( ( ref $array ) eq 'HASH' ) {
+        my $scope = $args->{ 'scope' } || 'key';
+        my $i = 0;
+        for my $key ( keys %$array ) {
+            if ( $i == $index ) {
+                if ( $scope eq 'key' ) {
+                    return $key;
+                } else {
+                    return $array->{ $key };
+                }
+            }
+            $i++;
+        }
     }
 }
 
@@ -282,6 +304,52 @@ sub _hdlr_append_var {
     my $name = $args->{ 'name' } || return '';
     my $var = $args->{ 'var' };
     $ctx->stash( 'vars' )->{ $name }->{ $var } = $ctx->stash( 'vars' )->{ $var };
+    return '';
+}
+
+sub _hdlr_array_search {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ 'name' } || return '';
+    my $array = $ctx->stash( 'vars' )->{ $name } || return '';
+    my $value = $args->{ 'value' };
+    if (! $value ) {
+        $value = $args->{ 'var' } || return '';
+    }
+    my $i = 0;
+    for my $var ( @$array ) {
+        if ( $var eq $value ) {
+            return $i;
+        }
+        $i++;
+    }
+    return '';
+}
+
+sub _hdlr_array_sort {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ 'name' } || return '';
+    my $kind = $args->{ kind } || 'numeric';
+    my $order = $args->{ order };
+    $order = $args->{ sort_order } unless $order;
+    if (! $order ) {
+        $order = 'ascend';
+    }
+    my @vars;
+    my $array = $ctx->stash( 'vars' )->{ $name };
+    if ( ( ref $array ) eq 'ARRAY' ) {
+        @vars = @$array;
+        if ( ( $kind eq 'str' ) && ( $order eq 'ascend' ) ) {
+            @vars = sort { $a cmp $b } @vars;
+        } elsif ( ( $kind eq 'str' ) && ( $order eq 'descend' ) ) {
+            @vars = sort { $b cmp $a } @vars;
+        } elsif ( ( $kind eq 'numeric' ) && ( $order eq 'ascend' ) ) {
+            @vars = sort { $a <=> $b } @vars;
+        } elsif ( ( $kind eq 'numeric' ) && ( $order eq 'descend' ) ) {
+            @vars = sort { $b <=> $a } @vars;
+        }
+        $array = \@vars;
+    }
+    $ctx->stash( 'vars' )->{ $name } = $array;
     return '';
 }
 
