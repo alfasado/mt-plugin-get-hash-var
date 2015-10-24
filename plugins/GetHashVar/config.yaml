@@ -24,6 +24,7 @@ tags:
         GetVarDump: $gethashvar::GetHashVar::Tags::_hdlr_get_vardump
         SplitVar: $gethashvar::GetHashVar::Tags::_hdlr_split_var
         DeleteVars: $gethashvar::GetHashVar::Tags::_hdlr_delete_vars
+        ResetVars: $gethashvar::GetHashVar::Tags::_hdlr_reset_vars
         ArraySearch: $gethashvar::GetHashVar::Tags::_hdlr_array_search
         ArraySort: $gethashvar::GetHashVar::Tags::_hdlr_array_sort
         ArrayShuffle: $gethashvar::GetHashVar::Tags::_hdlr_array_shuffle

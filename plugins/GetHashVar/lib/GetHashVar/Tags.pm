@@ -353,6 +353,12 @@ sub _hdlr_array_sort {
     return '';
 }
 
+sub _hdlr_reset_vars {
+    my ( $ctx, $args, $cond ) = @_;
+    $ctx->stash( 'vars', {} );
+    return '';
+}
+
 sub _filter_json2vars {
     my ( $json, $name, $ctx ) = @_;
     my $array = MT::Util::from_json( $json );
