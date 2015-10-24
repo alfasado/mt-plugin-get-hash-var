@@ -379,4 +379,9 @@ sub _filter_mtignore {
     return $text;
 }
 
+sub _filter_note {
+    my ( $text, $arg, $ctx ) = @_;
+    return $text;
+}
+
 1;

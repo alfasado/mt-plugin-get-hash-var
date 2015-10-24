@@ -38,6 +38,7 @@ tags:
         json2vars: $gethashvar::GetHashVar::Tags::_filter_json2vars
         vars2json: $gethashvar::GetHashVar::Tags::_filter_vars2json
         mtignore: $gethashvar::GetHashVar::Tags::_filter_mtignore
+        note: $gethashvar::GetHashVar::Tags::_filter_note
     filters:
         Entries:
             entry_ids:
