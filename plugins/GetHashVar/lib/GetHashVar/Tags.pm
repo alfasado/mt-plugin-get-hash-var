@@ -355,7 +355,14 @@ sub _hdlr_array_sort {
 
 sub _hdlr_reset_vars {
     my ( $ctx, $args, $cond ) = @_;
+    $ctx->stash( '__reset_vars_old_vars', $ctx->stash( 'vars' ) );
     $ctx->stash( 'vars', {} );
+    return '';
+}
+
+sub _hdlr_restore_vars {
+    my ( $ctx, $args, $cond ) = @_;
+    $ctx->stash( 'vars', $ctx->stash( '__reset_vars_old_vars' ) );
     return '';
 }
 
