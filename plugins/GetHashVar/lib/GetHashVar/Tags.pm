@@ -10,6 +10,24 @@ $Data::Dumper::Useperl = 1;
 $Data::Dumper::Maxdepth = 10;
 use Time::HiRes qw( usleep );
 
+sub _hdlr_set_hash_vars {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ 'name' } || return '';
+    my $val = $ctx->slurp( $args );
+    $val =~ s/(^\s+|\s+$)//g;
+    my @pairs = split /\r?\n/, $val;
+    foreach my $line ( @pairs ) {
+        next if $line =~ m/^\s*$/;
+        my ( $var, $value ) = split /\s*=/, $line, 2;
+        unless ( defined( $var ) && defined( $value ) ) {
+            return $ctx->error( "Invalid variable assignment: $line" );
+        }
+        $var =~ s/^\s+//;
+        $ctx->stash( 'vars' )->{ $name }->{ $var } = $value;
+    }
+    return '';
+}
+
 sub _hdlr_usleep {
     my ( $ctx, $args, $cond ) = @_;
     my $microseconds = $args->{ 'microseconds' } || return '';
