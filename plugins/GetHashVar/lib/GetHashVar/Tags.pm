@@ -407,6 +407,35 @@ sub _hdlr_restore_vars {
     return '';
 }
 
+sub _hdlr_stash_to_vars {
+    my ( $ctx, $args, $cond ) = @_;
+    my $stash = $args->{ stash };
+    my $object = $ctx->stash( $stash );
+    return '' unless $object;
+    my $install_properties;
+    eval {
+        $install_properties = $object->install_properties;
+    };
+    unless ( $@ ) {
+        if ( ( ref $install_properties ) eq 'HASH' ) {
+            my $values = $object->get_values;
+            if ( my $meta = $object->meta ) {
+                if ( ( ref $meta ) eq 'HASH' ) {
+                    for my $field( keys %$meta ) {
+                        my $field_name = $field;
+                        $field_name =~ s/\./_/;
+                        $values->{ $field_name } = $object->$field;
+                    }
+                }
+            }
+            for my $key ( keys %$values ) {
+                $ctx->stash( 'vars' )->{ $stash . '_' . $key } = $values->{ $key };
+            }
+        }
+    }
+    return '';
+}
+
 sub _filter_json2vars {
     my ( $json, $name, $ctx ) = @_;
     my $array = MT::Util::from_json( $json );

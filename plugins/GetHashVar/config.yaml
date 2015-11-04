@@ -35,6 +35,7 @@ tags:
         ArrayReverse: $gethashvar::GetHashVar::Tags::_hdlr_array_reverse
         ArrayUnique: $gethashvar::GetHashVar::Tags::_hdlr_array_unique
         AppendVar: $gethashvar::GetHashVar::Tags::_hdlr_append_var
+        Stash2Vars: $gethashvar::GetHashVar::Tags::_hdlr_stash_to_vars
         SetPublishedEntryIds: $gethashvar::GetHashVar::Tags::_hdlr_set_published_entry_ids
         SetPublishedPageIds: $gethashvar::GetHashVar::Tags::_hdlr_set_published_entry_ids
         USleep: $gethashvar::GetHashVar::Tags::_hdlr_usleep
