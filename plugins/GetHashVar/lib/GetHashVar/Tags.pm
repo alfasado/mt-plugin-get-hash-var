@@ -30,10 +30,18 @@ sub _hdlr_set_hash_vars {
 
 sub _hdlr_yaml_to_vars {
     my ( $ctx, $args, $cond ) = @_;
-    my $name = $args->{ 'name' } || return '';
+    my $name = $args->{ 'name' };
     my $yaml = $ctx->slurp( $args );
     my $array = MT::Util::YAML::Load( $yaml );
-    $ctx->stash( 'vars' )->{ $name } = $array;
+    if ( $name ) {
+        $ctx->stash( 'vars' )->{ $name } = $array;
+    } else {
+        if ( ( ref $array ) eq 'HASH' ) {
+            for my $key ( keys %$array ) {
+                $ctx->stash( 'vars' )->{ $key } = $array->{ $key };
+            }
+        }
+    }
     return '';
 }
 
