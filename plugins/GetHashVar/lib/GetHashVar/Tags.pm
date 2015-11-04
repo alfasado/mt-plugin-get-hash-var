@@ -28,6 +28,15 @@ sub _hdlr_set_hash_vars {
     return '';
 }
 
+sub _hdlr_yaml_to_vars {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ 'name' } || return '';
+    my $yaml = $ctx->slurp( $args );
+    my $array = MT::Util::YAML::Load( $yaml );
+    $ctx->stash( 'vars' )->{ $name } = $array;
+    return '';
+}
+
 sub _hdlr_usleep {
     my ( $ctx, $args, $cond ) = @_;
     my $microseconds = $args->{ 'microseconds' } || return '';
