@@ -47,6 +47,3 @@ tags:
         Entries:
             entry_ids:
                 handler: $gethashvar::GetHashVar::Tags::_hdlr_entries_entry_ids
-        Pages:
-            page_ids:
-                handler: $gethashvar::GetHashVar::Tags::_hdlr_entries_entry_ids
