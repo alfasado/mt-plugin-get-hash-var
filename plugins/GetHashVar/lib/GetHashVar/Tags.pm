@@ -28,6 +28,108 @@ sub _hdlr_set_hash_vars {
     return '';
 }
 
+sub _hdlr_loop_with_sort {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ 'name' } || return '';
+    my $kind = $args->{ kind } || 'numeric';
+    my $scope = $args->{ scope } || 'key';
+    if ( $scope eq 'value' ) {
+        $scope = 'var';
+    }
+    my $order = $args->{ order } || 'ascend';
+    my $tokens = $ctx->stash( 'tokens' );
+    my $builder = $ctx->stash( 'builder' );
+    my @vars;
+    my $array = $ctx->stash( 'vars' )->{ $name };
+    if ( ( ref $array ) eq 'HASH' ) {
+        if ( ( $kind eq 'string' ) &&
+            ( $scope eq 'key' ) && ( $order eq 'ascend' ) ) {
+            for my $key ( sort keys %$array ) {
+                push ( @vars, { $key => $array->{ $key } } );
+            }
+        } elsif ( ( $kind eq 'str' ) &&
+            ( $scope eq 'key' ) && ( $order eq 'descend' ) ) {
+            for my $key ( sort { $b cmp $a } keys %$array ) {
+                push ( @vars, { $key => $array->{ $key } } );
+            }
+        } elsif ( ( $kind eq 'str' ) &&
+            ( $scope eq 'var' ) && ( $order eq 'ascend' ) ) {
+            for my $key ( sort { $array->{ $a } cmp $array->{ $b } } keys %$array ) {
+                push ( @vars, { $key => $array->{ $key } } );
+            }
+        } elsif ( ( $kind eq 'str' ) &&
+            ( $scope eq 'var' ) && ( $order eq 'descend' ) ) {
+            for my $key ( sort { $array->{ $b } cmp $array->{ $a } } keys %$array ) {
+                push ( @vars, { $key => $array->{ $key } } );
+            }
+        } elsif ( ( $kind eq 'num' ) &&
+            ( $scope eq 'key' ) && ( $order eq 'ascend' ) ) {
+            for my $key ( sort { $a <=> $b } keys %$array ) {
+                push ( @vars, { $key => $array->{ $key } } );
+            }
+        } elsif ( ( $kind eq 'num' ) &&
+            ( $scope eq 'key' ) && ( $order eq 'descend' ) ) {
+            for my $key ( sort { $a <=> $b } keys %$array ) {
+                push ( @vars, { $key => $array->{ $key } } );
+            }
+        } elsif ( ( $kind eq 'num' ) &&
+            ( $scope eq 'var' ) && ( $order eq 'ascend' ) ) {
+            for my $key ( sort { $array->{ $a } <=> $array->{ $b } } keys %$array ) {
+                push ( @vars, { $key => $array->{ $key } } );
+            }
+        } elsif ( ( $kind eq 'num' ) &&
+            ( $scope eq 'var' ) && ( $order eq 'descend' ) ) {
+            foreach my $key ( sort { $array->{ $b } <=> $array->{ $a } } keys %$array ) {
+                push ( @vars, { $key => $array->{ $key } } );
+            }
+        } else {
+            for my $key ( keys %$array ) {
+                push ( @vars, { $key => $array->{ $key } } );
+            }
+        }
+    } elsif ( ( ref $array ) eq 'ARRAY' ) {
+        @vars = @$array;
+        if ( ( $kind eq 'str' ) && ( $order eq 'ascend' ) ) {
+            @vars = sort { $a cmp $b } @vars;
+        } elsif ( ( $kind eq 'str' ) && ( $order eq 'descend' ) ) {
+            @vars = sort { $b cmp $a } @vars;
+        } elsif ( ( $kind eq 'num' ) && ( $order eq 'ascend' ) ) {
+            @vars = sort { $a <=> $b } @vars;
+        } elsif ( ( $kind eq 'num' ) && ( $order eq 'descend' ) ) {
+            @vars = sort { $b <=> $a } @vars;
+        }
+    }
+    my $res = '';
+    my $i = 0;
+    my $odd = 1; my $even = 0;
+    for my $var ( @vars ) {
+        local $ctx->{ __stash }->{ vars }->{ __first__ } = 1 if ( $i == 0 );
+        local $ctx->{ __stash }->{ vars }->{ __counter__ } = $i + 1;
+        local $ctx->{ __stash }->{ vars }->{ __odd__ } = $odd;
+        local $ctx->{ __stash }->{ vars }->{ __even__ } = $even;
+        local $ctx->{ __stash }->{ vars }->{ __last__ } = 1 if ( !defined( $vars[ $i + 1 ] ) );
+        my ( $key, $value );
+        if ( ( ref $var ) && ( ref $var ) eq 'HASH' ) {
+            for my $_key ( keys %$var ) {
+                $key = $_key;
+                $value = $var->{ $_key };
+            }
+        } else {
+            $key = $i;
+            $value = $var;
+        }
+        local $ctx->{ __stash }->{ vars }->{ __key__ } = $key;
+        local $ctx->{ __stash }->{ vars }->{ __value__ } = $value;
+        my $out = $builder->build( $ctx, $tokens, $cond );
+        if ( !defined( $out ) ) { return $ctx->error( $builder->errstr ) };
+        $res .= $out;
+        if ( $odd == 1 ) { $odd = 0 } else { $odd = 1 };
+        if ( $even == 1 ) { $even = 0 } else { $even = 1 };
+        $i++;
+    }
+    return $res;
+}
+
 sub _hdlr_yaml_to_vars {
     my ( $ctx, $args, $cond ) = @_;
     my $name = $args->{ 'name' };

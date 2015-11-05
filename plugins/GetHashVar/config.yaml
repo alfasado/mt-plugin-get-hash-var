@@ -9,6 +9,7 @@ tags:
     block:
         SetHashVars: $gethashvar::GetHashVar::Tags::_hdlr_set_hash_vars
         YAML2Vars: $gethashvar::GetHashVar::Tags::_hdlr_yaml_to_vars
+        LoopWithSort: $gethashvar::GetHashVar::Tags::_hdlr_loop_with_sort
         IfKeyExists?: $gethashvar::GetHashVar::Tags::_hdlr_key_exists
         IfVarExists?: $gethashvar::GetHashVar::Tags::_hdlr_value_exists
         IfValueExists?: $gethashvar::GetHashVar::Tags::_hdlr_value_exists
