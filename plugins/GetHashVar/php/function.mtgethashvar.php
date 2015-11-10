@@ -4,6 +4,12 @@ function smarty_function_mtgethashvar ( $args, &$ctx ) {
     if ( isset( $args[ 'key' ] ) ) $key = $args[ 'key' ];
     if ( (! $name ) || (! $key ) ) return '';
     $hash = $ctx->__stash[ 'vars' ][ $name ];
+    if (! $hash ) {
+        $hash = $ctx->__stash[ 'vars' ][ strtolower( $name ) ];
+    }
+    if (! $hash ) {
+        return '';
+    }
     if ( strpos( $key, ':' ) !== FALSE ) {
         $keys = str_getcsv( $key, ':' );
     }
@@ -23,5 +29,6 @@ function smarty_function_mtgethashvar ( $args, &$ctx ) {
             return $hash[ $key ];
         }
     }
+    return '';
 }
 ?>

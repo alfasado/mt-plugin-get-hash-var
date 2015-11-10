@@ -7,8 +7,12 @@ function smarty_function_mtgetarrayjoin ( $args, &$ctx ) {
         $glue = '';
     }
     $array = $ctx->__stash[ 'vars' ][ $name ];
+    if (! $array ) {
+        $array = $ctx->__stash[ 'vars' ][ strtolower( $array ) ];
+    }
     if ( is_array( $array ) ) {
         return implode( $glue, $array );
     }
+    return '';
 }
 ?>

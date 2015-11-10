@@ -23,6 +23,13 @@ function smarty_block_mtloopwithsort ( $args, $content, &$ctx, &$repeat ) {
             $order = 'ascend';
         }
         $array = $ctx->__stash[ 'vars' ][ $name ];
+        if (! $array ) {
+            $array = $ctx->__stash[ 'vars' ][ strtolower( $name ) ];
+        }
+        if (! $array ) {
+            $repeat = FALSE;
+            return '';
+        }
         if ( array_values( $array ) === $array ) {
             if ( $order == 'ascend' ) {
                 sort( $array, $strcmp );

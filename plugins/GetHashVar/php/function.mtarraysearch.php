@@ -6,6 +6,9 @@ function smarty_function_mtarraysearch ( $args, &$ctx ) {
     if ( (! $name ) && (! $value ) ) return '';
     $var = $ctx->__stash[ 'vars' ][ $name ];
     if (! $var ) {
+        $var = $ctx->__stash[ 'vars' ][ strtolower( $name ) ];
+    }
+    if (! $var ) {
         if ( isset( $args[ 'var' ] ) ) $var = $args[ 'var' ];
     }
     if ( $var ) {
@@ -33,5 +36,6 @@ function smarty_function_mtarraysearch ( $args, &$ctx ) {
             }
         }
     }
+    return '';
 }
 ?>

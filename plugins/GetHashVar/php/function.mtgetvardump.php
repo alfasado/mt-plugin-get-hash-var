@@ -4,7 +4,11 @@ function smarty_function_mtgetvardump ( $args, &$ctx ) {
     ob_start();
     if ( $name ) {
         echo "${name} => \n";
-        var_dump( $ctx->__stash[ 'vars' ][ $name ] );
+        $var = $ctx->__stash[ 'vars' ][ $name ];
+        if (! $var ) {
+            $var = $ctx->__stash[ 'vars' ][ strtolower( $name ) ];
+        }
+        var_dump( $var );
     } else {
         var_dump( $ctx->__stash[ 'vars' ] );
     }

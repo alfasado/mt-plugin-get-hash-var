@@ -4,6 +4,9 @@ function smarty_function_mtsplitvar ( $args, &$ctx ) {
     if ( isset( $args[ 'set' ] ) ) $set = $args[ 'set' ];
     $var = $ctx->__stash[ 'vars' ][ $name ];
     if (! $var ) {
+        $var = $ctx->__stash[ 'vars' ][ strtolower( $name ) ];
+    }
+    if (! $var ) {
         if ( isset( $args[ 'var' ] ) ) $var = $args[ 'var' ];
     }
     if ( $var ) {
@@ -12,6 +15,8 @@ function smarty_function_mtsplitvar ( $args, &$ctx ) {
         if (! $glue ) $glue = ',';
         $vars = explode( $glue, $var );
         $ctx->__stash[ 'vars' ][ $name ] = $vars;
+        $ctx->__stash[ 'vars' ][ strtolower( $name ) ] = $vars;
     }
+    return '';
 }
 ?>

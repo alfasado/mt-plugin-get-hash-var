@@ -2,7 +2,9 @@
 function smarty_modifier_json2vars( $json, $name ) {
     global $mt;
     $ctx =& $mt->context();
-    $ctx->__stash[ 'vars' ][ $name ] = json_decode( $json, TRUE );
+    $json = json_decode( $json, TRUE );
+    $ctx->__stash[ 'vars' ][ $name ] = $json;
+    $ctx->__stash[ 'vars' ][ strtolower( $name ) ] = $json;
     return '';
 }
 ?>

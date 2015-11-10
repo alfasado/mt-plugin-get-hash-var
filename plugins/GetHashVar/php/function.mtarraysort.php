@@ -21,6 +21,12 @@ function smarty_function_mtarraysort ( $args, &$ctx ) {
         $order = 'ascend';
     }
     $array = $ctx->__stash[ 'vars' ][ $name ];
+    if (! $array ) {
+        $array = $ctx->__stash[ 'vars' ][ strtolower( $name ) ];
+    }
+    if (! $array ) {
+        return '';
+    }
     if ( array_values( $array ) === $array ) {
         if ( $order == 'ascend' ) {
             sort( $array, $strcmp );

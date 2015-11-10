@@ -24,6 +24,7 @@ sub _hdlr_set_hash_vars {
         }
         $var =~ s/^\s+//;
         $ctx->stash( 'vars' )->{ $name }->{ $var } = $value;
+        $ctx->stash( 'vars' )->{ lc( $name ) }->{ $var } = $value;
     }
     return '';
 }
@@ -41,6 +42,7 @@ sub _hdlr_loop_with_sort {
     my $builder = $ctx->stash( 'builder' );
     my @vars;
     my $array = $ctx->stash( 'vars' )->{ $name };
+    $array = $ctx->stash( 'vars' )->{ lc( $name ) } unless $array;
     if ( ( ref $array ) eq 'HASH' ) {
         if ( ( $kind eq 'string' ) &&
             ( $scope eq 'key' ) && ( $order eq 'ascend' ) ) {
@@ -136,11 +138,14 @@ sub _hdlr_yaml_to_vars {
     my $yaml = $ctx->slurp( $args );
     my $array = MT::Util::YAML::Load( $yaml );
     if ( $name ) {
+        # FIXME: str to lowercase
         $ctx->stash( 'vars' )->{ $name } = $array;
+        $ctx->stash( 'vars' )->{ lc( $name ) } = $array;
     } else {
         if ( ( ref $array ) eq 'HASH' ) {
             for my $key ( keys %$array ) {
                 $ctx->stash( 'vars' )->{ $key } = $array->{ $key };
+                $ctx->stash( 'vars' )->{ lc( $key ) } = $array->{ $key };
             }
         }
     }
@@ -175,6 +180,7 @@ sub _hdlr_is_scalar {
     my ( $ctx, $args, $cond ) = @_;
     my $name = $args->{ 'name' } || return 0;
     my $var = $ctx->stash( 'vars' )->{ $name };
+    $var = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $var;
     if ( defined( $var ) ) {
         if ( ref $var ) {
             return 0;
@@ -188,6 +194,7 @@ sub _hdlr_is_array {
     my ( $ctx, $args, $cond ) = @_;
     my $name = $args->{ 'name' } || return 0;
     my $var = $ctx->stash( 'vars' )->{ $name };
+    $var = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $var;
     if ( defined( $var ) ) {
         if ( ( ref $var ) eq 'ARRAY' ) {
             return 1;
@@ -200,6 +207,7 @@ sub _hdlr_is_hash {
     my ( $ctx, $args, $cond ) = @_;
     my $name = $args->{ 'name' } || return 0;
     my $var = $ctx->stash( 'vars' )->{ $name };
+    $var = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $var;
     if ( defined( $var ) ) {
         if ( ( ref $var ) eq 'HASH' ) {
             return 1;
@@ -216,6 +224,7 @@ sub _hdlr_in_array {
         $value = $args->{ 'var' } || return '';
     }
     my $array = $ctx->stash( 'vars' )->{ $name };
+    $array = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $array;
     if ( ( ref $array ) eq 'ARRAY' ) {
         if ( grep( /^$value$/, @$array ) ) {
             return 1;
@@ -236,6 +245,7 @@ sub _hdlr_get_array_var {
         $index = $num - 1;
     }
     my $array = $ctx->stash( 'vars' )->{ $name };
+    $array = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $array;
     if ( ( ref $array ) eq 'ARRAY' ) {
         return @$array[ $index ];
     } elsif ( ( ref $array ) eq 'HASH' ) {
@@ -259,6 +269,7 @@ sub _hdlr_get_hash_var {
     my $key = $args->{ 'key' } || return '';
     my $name = $args->{ 'name' } || return '';
     my $hash = $ctx->stash( 'vars' )->{ $name };
+    $hash = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $hash;
     if ( ( ref $hash ) eq 'HASH' ) {
         if ( ( ref $key ) && ( ( ref $key ) eq 'ARRAY' ) ) {
             my $value = $hash;
@@ -268,11 +279,14 @@ sub _hdlr_get_hash_var {
                     $value = @$value[ $_key ];
                 } else {
                     $value = $value->{ $_key };
+                    $value = $value->{ lc( $_key ) } unless $value;
                 }
             }
             return $value;
         }
-        return $hash->{ $key };
+        my $value = $hash->{ $key };
+        $value = $hash->{ lc( $key ) } unless $value;
+        return $value;
     }
     return '';
 }
@@ -285,9 +299,12 @@ sub _hdlr_get_hash_key {
     }
     my $name = $args->{ 'name' } || return '';
     my $hash = $ctx->stash( 'vars' )->{ $name };
+    $hash = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $hash;
     if ( ( ref $hash ) eq 'HASH' ) {
+        $value = quotemeta( $value );
         for my $key ( keys %$hash ) {
-            if ( $hash->{ $key } eq $value ) {
+            my $_value = $hash->{ $key };
+            if ( $_value =~ m!^$value$!i ) {
                 return $key;
                 last;
             }
@@ -301,6 +318,7 @@ sub _hdlr_array_join {
     my $name = $args->{ 'name' } || return '';
     my $glue  = $args->{ 'glue ' } || '';
     my $array = $ctx->stash( 'vars' )->{ $name };
+    $array = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $array;
     if ( ( ref $array ) eq 'ARRAY' ) {
         return join( $glue, $array );
     }
@@ -311,6 +329,7 @@ sub _hdlr_array_rand {
     my ( $ctx, $args, $cond ) = @_;
     my $name = $args->{ 'name' } || return '';
     my $array = $ctx->stash( 'vars' )->{ $name };
+    $array = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $array;
     if ( ( ref $array ) eq 'ARRAY' ) {
         my $count = @$array; 
         my $num = int( rand( $count ) );
@@ -323,6 +342,7 @@ sub _hdlr_split_var {
     my $name = $args->{ 'name' } || return '';
     my $glue = $args->{ 'glue' } || ',';
     my $var = $ctx->stash( 'vars' )->{ $name };
+    $var = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $var;
     my $set = $args->{ 'set' };
     if (! $var ) {
         $var = $args->{ var };
@@ -331,8 +351,10 @@ sub _hdlr_split_var {
         my @vars = split( /$glue/, $var );
         if ( $set ) {
             $ctx->stash( 'vars' )->{ $set } = \@vars;
+            $ctx->stash( 'vars' )->{ lc( $set ) } = \@vars;
         } else {
             $ctx->stash( 'vars' )->{ $name } = \@vars;
+            $ctx->stash( 'vars' )->{ lc( $name ) } = \@vars;
         }
     }
     return '';
@@ -342,6 +364,7 @@ sub _hdlr_array_shuffle {
     my ( $ctx, $args, $cond ) = @_;
     my $name = $args->{ 'name' } || return '';
     my $var = $ctx->stash( 'vars' )->{ $name };
+    $var = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $var;
     if (! $var ) {
         return '';
     }
@@ -349,6 +372,7 @@ sub _hdlr_array_shuffle {
     unless ( $@ ) {
         my @vars = List::Util::shuffle( @$var );
         $ctx->stash( 'vars' )->{ $name } = \@vars;
+        $ctx->stash( 'vars' )->{ lc( $name ) } = \@vars;
     }
     return '';
 }
@@ -357,11 +381,13 @@ sub _hdlr_array_reverse {
     my ( $ctx, $args, $cond ) = @_;
     my $name = $args->{ 'name' } || return '';
     my $var = $ctx->stash( 'vars' )->{ $name };
+    $var = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $var;
     if (! $var ) {
         return '';
     }
     my @vars = reverse( @$var );
     $ctx->stash( 'vars' )->{ $name } = \@vars;
+    $ctx->stash( 'vars' )->{ lc( $name ) } = \@vars;
     return '';
 }
 
@@ -369,6 +395,7 @@ sub _hdlr_array_unique {
     my ( $ctx, $args, $cond ) = @_;
     my $name = $args->{ 'name' } || return '';
     my $var = $ctx->stash( 'vars' )->{ $name };
+    $var = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $var;
     if (! $var ) {
         return '';
     }
@@ -379,6 +406,7 @@ sub _hdlr_array_unique {
         }
     }
     $ctx->stash( 'vars' )->{ $name } = \@_var;
+    $ctx->stash( 'vars' )->{ lc( $name ) } = \@_var;
     return '';
 }
 
@@ -400,7 +428,9 @@ sub _hdlr_get_vardump {
     my $vars = $ctx->{ __stash }{ vars } ||= {};
     my $dump;
     if ( my $name = $args->{ name } ) {
-        $dump = "${name} => \n" . ( Dumper $vars->{ $name } );
+        my $value = $vars->{ $name };
+        $value = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $value;
+        $dump = "${name} => \n" . ( Dumper $value );
     } else {
         $dump = Dumper $vars;
     }
@@ -433,6 +463,7 @@ sub _hdlr_delete_vars {
     }
     for my $n ( @$name ) {
         delete( $ctx->stash( 'vars' )->{ $n } );
+        delete( $ctx->stash( 'vars' )->{ lc ( $n ) } );
     }
 }
 
@@ -440,14 +471,21 @@ sub _hdlr_append_var {
     my ( $ctx, $args, $cond ) = @_;
     my $name = $args->{ 'name' } || return '';
     my $var = $args->{ 'var' };
-    $ctx->stash( 'vars' )->{ $name }->{ $var } = $ctx->stash( 'vars' )->{ $var };
+    my $_var = $ctx->stash( 'vars' )->{ $var };
+    my $_var = $ctx->stash( 'vars' )->{ lc ( $var ) } unless $_var;
+    $ctx->stash( 'vars' )->{ $name }->{ $var } = $_var;
+    $ctx->stash( 'vars' )->{ lc( $name ) }->{ $var } = $_var;
     return '';
 }
 
 sub _hdlr_array_search {
     my ( $ctx, $args, $cond ) = @_;
     my $name = $args->{ 'name' } || return '';
-    my $array = $ctx->stash( 'vars' )->{ $name } || return '';
+    my $array = $ctx->stash( 'vars' )->{ $name };
+    $array = $ctx->stash( 'vars' )->{ lc( $name ) } unless $array;
+    if (! $array ) {
+        return '';
+    }
     my $value = $args->{ 'value' };
     if (! $value ) {
         $value = $args->{ 'var' } || return '';
@@ -473,6 +511,7 @@ sub _hdlr_array_sort {
     }
     my @vars;
     my $array = $ctx->stash( 'vars' )->{ $name };
+    $array = $ctx->stash( 'vars' )->{ lc( $name ) } unless $array;
     if ( ( ref $array ) eq 'ARRAY' ) {
         @vars = @$array;
         if ( ( $kind eq 'str' ) && ( $order eq 'ascend' ) ) {
@@ -487,6 +526,7 @@ sub _hdlr_array_sort {
         $array = \@vars;
     }
     $ctx->stash( 'vars' )->{ $name } = $array;
+    $ctx->stash( 'vars' )->{ lc( $name ) } = $array;
     return '';
 }
 
@@ -542,6 +582,7 @@ sub _filter_json2vars {
     my ( $json, $name, $ctx ) = @_;
     my $array = MT::Util::from_json( $json );
     $ctx->stash( 'vars' )->{ $name } = $array;
+    $ctx->stash( 'vars' )->{ lc( $name ) } = $array;
     return '';
 }
 

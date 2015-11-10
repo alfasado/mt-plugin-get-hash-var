@@ -9,6 +9,9 @@ function smarty_function_mtgetarrayvar ( $args, &$ctx ) {
         return '';
     }
     $array = $ctx->__stash[ 'vars' ][ $name ];
+    if (! $array ) {
+        $array = $ctx->__stash[ 'vars' ][ strtolower( $name ) ];
+    }
     if ( is_array( $array ) ) {
         if ( array_values( $array ) === $array ) {
             if ( isset( $array[ $index ] ) ) {
@@ -29,5 +32,6 @@ function smarty_function_mtgetarrayvar ( $args, &$ctx ) {
             }
         }
     }
+    return '';
 }
 ?>
