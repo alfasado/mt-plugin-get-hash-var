@@ -233,6 +233,13 @@ sub _hdlr_in_array {
     return 0;
 }
 
+sub _hdlr_not_in_array {
+    unless ( _hdlr_in_array( @_ ) ) {
+        return 1;
+    }
+    return 0;
+}
+
 sub _hdlr_get_array_var {
     my ( $ctx, $args, $cond ) = @_;
     my $name = $args->{ 'name' } || return '';

@@ -14,6 +14,7 @@ tags:
         IfVarExists?: $gethashvar::GetHashVar::Tags::_hdlr_value_exists
         IfValueExists?: $gethashvar::GetHashVar::Tags::_hdlr_value_exists
         IfInArray?: $gethashvar::GetHashVar::Tags::_hdlr_in_array
+        IfNotInArray?: $gethashvar::GetHashVar::Tags::_hdlr_not_in_array
         IfIsInArray?: $gethashvar::GetHashVar::Tags::_hdlr_in_array
         IfVarIsScalar?: $gethashvar::GetHashVar::Tags::_hdlr_is_scalar
         IfVarIsArray?: $gethashvar::GetHashVar::Tags::_hdlr_is_array
