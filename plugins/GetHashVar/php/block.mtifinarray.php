@@ -5,6 +5,9 @@ function smarty_block_mtifinarray ( $args, $content, &$ctx, &$repeat ) {
         if ( isset( $args[ 'value' ] ) ) $value = $args[ 'value' ];
         if ( isset( $args[ 'var' ] ) ) $value = $args[ 'var' ];
         $array = $ctx->__stash[ 'vars' ][ $name ];
+        if (! $array ) {
+            $array = $ctx->__stash[ 'vars' ][ strtolower( $name ) ];
+        }
         $cond = TRUE;
         if ( isset( $args[ 'else' ] ) ) $else = TRUE;
         if ( is_array( $array ) ) {

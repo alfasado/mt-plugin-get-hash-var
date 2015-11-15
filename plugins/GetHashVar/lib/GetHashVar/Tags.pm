@@ -585,6 +585,42 @@ sub _hdlr_stash_to_vars {
     return '';
 }
 
+sub _hdlr_substrvar {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ 'name' } || return '';
+    my $start = $args->{ start }  || $args->{ offset };
+    if (! $start ) {
+        $start = 0;
+    }
+    my $length = $args->{ 'length' };
+    my $var = $ctx->stash( 'vars' )->{ $name };
+    $var = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $var;
+    return substr( $var, $start, $length );
+}
+
+sub _hdlr_array_merge {
+    my ( $ctx, $args, $cond ) = @_;
+    my $names = $args->{ 'name' } || return '';
+    my $set = $args->{ 'set' } || return '';
+    if ( ( ref $names ) eq 'ARRAY' ) {
+        my @new_array;
+        for my $name ( @$names ) {
+            my $var = $ctx->stash( 'vars' )->{ $name };
+            $var = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $var;
+            if ( ( ref $var ) eq 'ARRAY' ) {
+                push ( @new_array , @$var );
+            } else {
+                if ( $var ) {
+                    push ( @new_array , $var );
+                }
+            }
+        }
+        $ctx->stash( 'vars' )->{ $set } = \@new_array;
+        $ctx->stash( 'vars' )->{ lc( $set ) } = \@new_array;
+    }
+    return '';
+}
+
 sub _filter_json2vars {
     my ( $json, $name, $ctx ) = @_;
     my $array = MT::Util::from_json( $json );
