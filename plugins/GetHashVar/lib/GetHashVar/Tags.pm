@@ -9,6 +9,7 @@ use Data::Dumper;
 $Data::Dumper::Useperl = 1;
 $Data::Dumper::Maxdepth = 10;
 use Time::HiRes qw( usleep );
+use Hash::Merge::Simple qw/ merge /;
 
 sub _hdlr_set_hash_vars {
     my ( $ctx, $args, $cond ) = @_;
@@ -617,6 +618,25 @@ sub _hdlr_array_merge {
         }
         $ctx->stash( 'vars' )->{ $set } = \@new_array;
         $ctx->stash( 'vars' )->{ lc( $set ) } = \@new_array;
+    }
+    return '';
+}
+
+sub _hdlr_hash_merge {
+    my ( $ctx, $args, $cond ) = @_;
+    my $names = $args->{ 'name' } || return '';
+    my $set = $args->{ 'set' } || return '';
+    if ( ( ref $names ) eq 'ARRAY' ) {
+        my $new_hash = {};
+        for my $name ( @$names ) {
+            my $var = $ctx->stash( 'vars' )->{ $name };
+            $var = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $var;
+            if ( ( ref $var ) eq 'HASH' ) {
+                $new_hash = merge( $new_hash , $var );
+            }
+        }
+        $ctx->stash( 'vars' )->{ $set } = $new_hash;
+        $ctx->stash( 'vars' )->{ lc( $set ) } = $new_hash;
     }
     return '';
 }

@@ -40,6 +40,9 @@ tags:
         Stash2Vars: $gethashvar::GetHashVar::Tags::_hdlr_stash_to_vars
         SubstrVar: $gethashvar::GetHashVar::Tags::_hdlr_substrvar
         ArrayMerge: $gethashvar::GetHashVar::Tags::_hdlr_array_merge
+        MergeArray: $gethashvar::GetHashVar::Tags::_hdlr_array_merge
+        HashMerge: $gethashvar::GetHashVar::Tags::_hdlr_hash_merge
+        MergeHash: $gethashvar::GetHashVar::Tags::_hdlr_hash_merge
         SetPublishedEntryIds: $gethashvar::GetHashVar::Tags::_hdlr_set_published_entry_ids
         SetPublishedPageIds: $gethashvar::GetHashVar::Tags::_hdlr_set_published_entry_ids
         USleep: $gethashvar::GetHashVar::Tags::_hdlr_usleep
