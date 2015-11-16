@@ -51,6 +51,8 @@ tags:
         vars2json: $gethashvar::GetHashVar::Tags::_filter_vars2json
         mtignore: $gethashvar::GetHashVar::Tags::_filter_mtignore
         note: $gethashvar::GetHashVar::Tags::_filter_note
+        ts_format: $gethashvar::GetHashVar::Tags::_filter_ts_format
+        db2ts: $gethashvar::GetHashVar::Tags::_filter_db2ts
     filters:
         Entries:
             entry_ids:

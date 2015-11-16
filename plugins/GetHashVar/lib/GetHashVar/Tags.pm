@@ -667,4 +667,18 @@ sub _filter_note {
     return $text;
 }
 
+sub _filter_ts_format {
+    my ( $text, $arg, $ctx ) = @_;
+    my $args = { format => $arg, ts => $text  };
+    $text = MT::Template::Context::build_date( $ctx, $args );
+    return $text;
+}
+
+sub _filter_db2ts {
+    my ( $text, $arg, $ctx ) = @_;
+    $text =~ s/(?:\+|-)\d{2}$//;
+    $text =~ tr/\- ://d;
+    return $text;
+}
+
 1;
