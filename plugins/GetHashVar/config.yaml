@@ -3,11 +3,14 @@ key: gethashvar
 name: GetHashVar
 author_name: Alfasado Inc.
 author_link: http://alfasado.net/
-version: 0.9
+version: 0.95
 description: Advanced template vars.
 tags:
     block:
         SetHashVars: $gethashvar::GetHashVar::Tags::_hdlr_set_hash_vars
+        UnsetStash: $gethashvar::GetHashVar::Tags::_hdlr_unset_stash
+        UnsetVars: $gethashvar::GetHashVar::Tags::_hdlr_unset_vars
+        LocalVars: $gethashvar::GetHashVar::Tags::_hdlr_local_vars
         YAML2Vars: $gethashvar::GetHashVar::Tags::_hdlr_yaml_to_vars
         LoopWithSort: $gethashvar::GetHashVar::Tags::_hdlr_loop_with_sort
         IfKeyExists?: $gethashvar::GetHashVar::Tags::_hdlr_key_exists
@@ -31,6 +34,9 @@ tags:
         SaveVars: $gethashvar::GetHashVar::Tags::_hdlr_save_vars
         ResetVars: $gethashvar::GetHashVar::Tags::_hdlr_reset_vars
         RestoreVars: $gethashvar::GetHashVar::Tags::_hdlr_restore_vars
+        SaveStash: $gethashvar::GetHashVar::Tags::_hdlr_save_stash
+        ResetStash: $gethashvar::GetHashVar::Tags::_hdlr_reset_stash
+        RestoreStash: $gethashvar::GetHashVar::Tags::_hdlr_restore_stash
         ArraySearch: $gethashvar::GetHashVar::Tags::_hdlr_array_search
         ArraySort: $gethashvar::GetHashVar::Tags::_hdlr_array_sort
         ArrayShuffle: $gethashvar::GetHashVar::Tags::_hdlr_array_shuffle

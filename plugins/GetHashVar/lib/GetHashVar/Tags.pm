@@ -30,6 +30,41 @@ sub _hdlr_set_hash_vars {
     return '';
 }
 
+sub _hdlr_unset_stash {
+    my ( $ctx, $args, $cond ) = @_;
+    my $stash = $args->{ 'stash' };
+    my @alpha = ( 'a' .. 'z', 'A' .. 'Z', 0 .. 9 );
+    my $token = join '', map $alpha[ rand @alpha ], 1 .. 40;
+    $ctx->stash( '__get_hash_var_old_stash_' . $token, $ctx->stash( $stash ) );
+    $ctx->stash( $stash, '' );
+    my $build = $ctx->slurp( $args );
+    $ctx->stash( $stash, $ctx->stash( '__get_hash_var_old_stash_' . $token ) );
+    $build;
+}
+
+sub _hdlr_unset_vars {
+    my ( $ctx, $args, $cond ) = @_;
+    my $vars = $ctx->{ __stash }{ vars } ||= {};
+    my @alpha = ( 'a' .. 'z', 'A' .. 'Z', 0 .. 9 );
+    my $token = join '', map $alpha[ rand @alpha ], 1 .. 40;
+    $ctx->stash( '__get_hash_var_old_vars_' . $token, $ctx->stash( 'vars' ) );
+    $ctx->stash( 'vars', {} );
+    my $build = $ctx->slurp( $args );
+    $ctx->stash( 'vars', $ctx->stash( '__get_hash_var_old_vars_' . $token ) );
+    $build;
+}
+
+sub _hdlr_local_vars {
+    my ( $ctx, $args, $cond ) = @_;
+    my $vars = $ctx->{ __stash }{ vars } ||= {};
+    my @alpha = ( 'a' .. 'z', 'A' .. 'Z', 0 .. 9 );
+    my $token = join '', map $alpha[ rand @alpha ], 1 .. 40;
+    $ctx->stash( '__get_hash_var_old_vars_' . $token, $ctx->stash( 'vars' ) );
+    my $build = $ctx->slurp( $args );
+    $ctx->stash( 'vars', $ctx->stash( '__get_hash_var_old_vars_' . $token ) );
+    $build;
+}
+
 sub _hdlr_loop_with_sort {
     my ( $ctx, $args, $cond ) = @_;
     my $name = $args->{ 'name' } || return '';
@@ -540,20 +575,48 @@ sub _hdlr_array_sort {
 
 sub _hdlr_reset_vars {
     my ( $ctx, $args, $cond ) = @_;
-    $ctx->stash( '__get_hash_var_old_vars', $ctx->stash( 'vars' ) );
+    my $key = $args->{ key } || '';
+    $ctx->stash( '__get_hash_var_old_vars_' . $key, $ctx->stash( 'vars' ) );
     $ctx->stash( 'vars', {} );
     return '';
 }
 
 sub _hdlr_save_vars {
     my ( $ctx, $args, $cond ) = @_;
-    $ctx->stash( '__get_hash_var_old_vars', $ctx->stash( 'vars' ) );
+    my $key = $args->{ key } || '';
+    $ctx->stash( '__get_hash_var_old_vars_' . $key, $ctx->stash( 'vars' ) );
     return '';
 }
 
 sub _hdlr_restore_vars {
     my ( $ctx, $args, $cond ) = @_;
-    $ctx->stash( 'vars', $ctx->stash( '__get_hash_var_old_vars' ) );
+    my $key = $args->{ key } || '';
+    $ctx->stash( 'vars', $ctx->stash( '__get_hash_var_old_vars_' . $key ) );
+    return '';
+}
+
+sub _hdlr_reset_stash {
+    my ( $ctx, $args, $cond ) = @_;
+    my $key = $args->{ key } || '';
+    my $stash = $args->{ stash } || return '';
+    $ctx->stash( '__get_hash_var_old_stash_' . $key, $ctx->stash( $stash ) );
+    $ctx->stash( $stash, undef );
+    return '';
+}
+
+sub _hdlr_save_stash {
+    my ( $ctx, $args, $cond ) = @_;
+    my $key = $args->{ key } || '';
+    my $stash = $args->{ stash } || return '';
+    $ctx->stash( '__get_hash_var_old_stash_' . $key, $ctx->stash( $stash ) );
+    return '';
+}
+
+sub _hdlr_restore_stash {
+    my ( $ctx, $args, $cond ) = @_;
+    my $key = $args->{ key } || '';
+    my $stash = $args->{ stash } || return '';
+    $ctx->stash( $stash, $ctx->stash( '__get_hash_var_old_stash_' . $key ) );
     return '';
 }
 
