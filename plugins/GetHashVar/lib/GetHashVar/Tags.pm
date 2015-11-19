@@ -54,6 +54,12 @@ sub _hdlr_local_vars {
     my ( $ctx, $args, $cond ) = @_;
     my $vars = $ctx->{ __stash }{ vars } ||= {};
     my %old_vars = %$vars;
+    while ( my ( $key, $value ) = each %$args ) {
+        if ( $key ne '@' ) {
+            $ctx->{ __stash }{ vars }{ $key } = $value;
+            $ctx->{ __stash }{ vars }{ lc( $key ) } = $value;
+        }
+    }
     my $build = $ctx->slurp( $args );
     $ctx->{ __stash }{ vars } = \%old_vars;
     $build;
