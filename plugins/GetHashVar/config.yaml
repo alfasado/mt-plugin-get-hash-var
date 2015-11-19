@@ -45,6 +45,7 @@ tags:
         AppendVar: $gethashvar::GetHashVar::Tags::_hdlr_append_var
         Stash2Vars: $gethashvar::GetHashVar::Tags::_hdlr_stash_to_vars
         SubstrVar: $gethashvar::GetHashVar::Tags::_hdlr_substrvar
+        SetGlobalVar: $gethashvar::GetHashVar::Tags::_hdlr_set_global_var
         ArrayMerge: $gethashvar::GetHashVar::Tags::_hdlr_array_merge
         MergeArray: $gethashvar::GetHashVar::Tags::_hdlr_array_merge
         HashMerge: $gethashvar::GetHashVar::Tags::_hdlr_hash_merge

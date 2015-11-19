@@ -62,7 +62,25 @@ sub _hdlr_local_vars {
     }
     my $build = $ctx->slurp( $args );
     $ctx->{ __stash }{ vars } = \%old_vars;
+    if ( my $global = $ctx->stash( '__get_hash_var_global_vars' ) ) {
+        while ( my ( $key, $value ) = each %$global ) {
+            $ctx->{ __stash }{ vars }{ $key } = $value;
+        }
+    }
     $build;
+}
+
+sub _hdlr_set_global_var {
+    my ( $ctx, $args, $cond ) = @_;
+    $ctx->stash( 'tag', 'setvar' );
+    require MT::Template::Context;
+    MT::Template::Tags::Core::_hdlr_set_var( @_ );
+    my $name = $args->{ 'name' } || return '';
+    my $value = $ctx->{ __stash }{ vars }{ $name };
+    my $global_vars = $ctx->stash( '__get_hash_var_global_vars' ) || {};
+    $global_vars->{ $name } = $value;
+    $ctx->stash( '__get_hash_var_global_vars', $global_vars );
+    return '';
 }
 
 sub _hdlr_loop_with_sort {
@@ -596,6 +614,11 @@ sub _hdlr_restore_vars {
     my ( $ctx, $args, $cond ) = @_;
     my $key = $args->{ key } || '';
     $ctx->stash( 'vars', $ctx->stash( '__get_hash_var_old_vars_' . $key ) );
+    if ( my $global = $ctx->stash( '__get_hash_var_global_vars' ) ) {
+        while ( my ( $key, $value ) = each %$global ) {
+            $ctx->{ __stash }{ vars }{ $key } = $value;
+        }
+    }
     return '';
 }
 
