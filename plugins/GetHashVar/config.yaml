@@ -49,7 +49,6 @@ tags:
         SubstrVar: $gethashvar::GetHashVar::Tags::_hdlr_substrvar
         SetGlobalVar: $gethashvar::GetHashVar::Tags::_hdlr_set_global_var
         CreateElement: $gethashvar::GetHashVar::Tags::_hdlr_create_element
-        SetAttribute: $gethashvar::GetHashVar::Tags::_hdlr_set_attribute
         AppendChild: $gethashvar::GetHashVar::Tags::_hdlr_append_child
         SetAttribute: $gethashvar::GetHashVar::Tags::_hdlr_set_attribute
         ArrayMerge: $gethashvar::GetHashVar::Tags::_hdlr_array_merge
