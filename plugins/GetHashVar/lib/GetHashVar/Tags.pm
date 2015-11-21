@@ -72,20 +72,29 @@ sub _hdlr_local_vars {
 
 sub _hdlr_set_attribute {
     my ( $ctx, $args, $cond ) = @_;
-    my $name = $args->{ name } || return '';
-    my $tag = $args->{ tag } || return '';
-    my $var = $ctx->{ __stash }{ vars }{ $name };
-    if (! $var ) {
-        return '';
+    my $node = $args->{ node };
+    if (! $node ) {
+        my $name = $args->{ name } || return '';
+        my $tag = $args->{ tag } || return '';
+        my $var = $ctx->{ __stash }{ vars }{ $name };
+        if (! $var ) {
+            return '';
+        }
+        my $elements = $var->getElementsByTagName( $tag );
+        if (! $elements ) {
+            return '';
+        }
+        my $index = $args->{ index } || 0;
+        $node = @$elements[ $index ];
+    } else {
+        $node = $ctx->{ __stash }{ vars }{ $node };
     }
-    my $elements = $var->getElementsByTagName( $tag );
-    if (! $elements ) {
+    if (! $node ) {
         return '';
     }
     my $attributes = $args->{ attributes } || return '';
-    my $index = $args->{ index } || 0;
     while ( my ( $key, $value ) = each %$attributes ) {
-        @$elements[ $index ]->setAttribute( $key, $value );
+        $node->setAttribute( $key, $value );
     }
     return '';
 }
