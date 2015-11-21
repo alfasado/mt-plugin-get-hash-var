@@ -78,15 +78,67 @@ sub _hdlr_set_attribute {
     if (! $var ) {
         return '';
     }
-    my $element = $var->getElementsByTagName( $tag );
-    if (! $element ) {
+    my $elements = $var->getElementsByTagName( $tag );
+    if (! $elements ) {
         return '';
     }
     my $attributes = $args->{ attributes } || return '';
     my $index = $args->{ index } || 0;
     while ( my ( $key, $value ) = each %$attributes ) {
-        @$element[ $index ]->setAttribute( $key, $value );
+        @$elements[ $index ]->setAttribute( $key, $value );
     }
+    return '';
+}
+
+sub _hdlr_set_raw_template {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ name } || return '';
+    my $uncompiled = $ctx->stash( 'uncompiled' ) || '';
+    $ctx->{ __stash }{ vars }{ $name } = $uncompiled;
+    $ctx->{ __stash }{ vars }{ lc( $name ) } = $uncompiled;
+    return '';
+}
+
+sub _hdlr_create_element {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ name } || return '';
+    my $tag = $args->{ tag } || return '';
+    my $attributes = $args->{ attributes };
+    require MT::Template::Node;
+    my $node = MT::Template::Node->new( tag => $tag,
+        attributes => $attributes );
+    my $uncompiled = $ctx->stash( 'uncompiled' ) || '';
+    $node->innerHTML( $uncompiled );
+    $ctx->{ __stash }{ vars }{ $name } = $node;
+    $ctx->{ __stash }{ vars }{ lc( $name ) } = $node;
+    return '';
+}
+
+sub _hdlr_append_child {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ name } || return '';
+    my $node = $args->{ node } || return '';
+    my $tag = $args->{ tag } || return '';
+    my $var = $ctx->{ __stash }{ vars }{ $name };
+    if (! $var ) {
+        return '';
+    }
+    my $elements = $var->getElementsByTagName( $tag );
+    if (! $elements ) {
+        return '';
+    }
+    my $element = $ctx->{ __stash }{ vars }{ $node };
+    my $index = $args->{ index } || 0;
+    @$elements[ $index ]->appendChild( $element );
+    return '';
+}
+
+sub _hdlr_set_inner_html {
+    my ( $ctx, $args, $cond ) = @_;
+    my $node = $args->{ node } || return '';
+    my $element = $ctx->{ __stash }{ vars }{ $node };
+    my $uncompiled = $ctx->stash( 'uncompiled' ) || '';
+    $element->innerHTML( $uncompiled );
     return '';
 }
 
@@ -553,7 +605,7 @@ sub _hdlr_append_var {
     my $name = $args->{ 'name' } || return '';
     my $var = $args->{ 'var' };
     my $_var = $ctx->stash( 'vars' )->{ $var };
-    my $_var = $ctx->stash( 'vars' )->{ lc ( $var ) } unless $_var;
+    $_var = $ctx->stash( 'vars' )->{ lc ( $var ) } unless $_var;
     $ctx->stash( 'vars' )->{ $name }->{ $var } = $_var;
     $ctx->stash( 'vars' )->{ lc( $name ) }->{ $var } = $_var;
     return '';

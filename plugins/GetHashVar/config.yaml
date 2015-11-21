@@ -12,6 +12,9 @@ tags:
         UnsetVars: $gethashvar::GetHashVar::Tags::_hdlr_unset_vars
         LocalVars: $gethashvar::GetHashVar::Tags::_hdlr_local_vars
         YAML2Vars: $gethashvar::GetHashVar::Tags::_hdlr_yaml_to_vars
+        CreateElement: $gethashvar::GetHashVar::Tags::_hdlr_create_element
+        SetRawTemplate: $gethashvar::GetHashVar::Tags::_hdlr_set_raw_template
+        SetInnerHTML: $gethashvar::GetHashVar::Tags::_hdlr_set_inner_html
         LoopWithSort: $gethashvar::GetHashVar::Tags::_hdlr_loop_with_sort
         IfKeyExists?: $gethashvar::GetHashVar::Tags::_hdlr_key_exists
         IfVarExists?: $gethashvar::GetHashVar::Tags::_hdlr_value_exists
@@ -46,6 +49,8 @@ tags:
         Stash2Vars: $gethashvar::GetHashVar::Tags::_hdlr_stash_to_vars
         SubstrVar: $gethashvar::GetHashVar::Tags::_hdlr_substrvar
         SetGlobalVar: $gethashvar::GetHashVar::Tags::_hdlr_set_global_var
+        SetAttribute: $gethashvar::GetHashVar::Tags::_hdlr_set_attribute
+        AppendChild: $gethashvar::GetHashVar::Tags::_hdlr_append_child
         SetAttribute: $gethashvar::GetHashVar::Tags::_hdlr_set_attribute
         ArrayMerge: $gethashvar::GetHashVar::Tags::_hdlr_array_merge
         MergeArray: $gethashvar::GetHashVar::Tags::_hdlr_array_merge
