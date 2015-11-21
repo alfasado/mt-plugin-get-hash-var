@@ -70,6 +70,26 @@ sub _hdlr_local_vars {
     $build;
 }
 
+sub _hdlr_set_attribute {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ name } || return '';
+    my $tag = $args->{ tag } || return '';
+    my $var = $ctx->{ __stash }{ vars }{ $name };
+    if (! $var ) {
+        return '';
+    }
+    my $element = $var->getElementsByTagName( $tag );
+    if (! $element ) {
+        return '';
+    }
+    my $attributes = $args->{ attributes } || return '';
+    my $index = $args->{ index } || 0;
+    while ( my ( $key, $value ) = each %$attributes ) {
+        @$element[ $index ]->setAttribute( $key, $value );
+    }
+    return '';
+}
+
 sub _hdlr_set_global_var {
     my ( $ctx, $args, $cond ) = @_;
     $ctx->stash( 'tag', 'setvar' );
