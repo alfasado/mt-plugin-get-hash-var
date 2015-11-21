@@ -107,8 +107,6 @@ sub _hdlr_create_element {
     require MT::Template::Node;
     my $node = MT::Template::Node->new( tag => $tag,
         attributes => $attributes );
-    my $uncompiled = $ctx->stash( 'uncompiled' ) || '';
-    $node->innerHTML( $uncompiled );
     $ctx->{ __stash }{ vars }{ $name } = $node;
     $ctx->{ __stash }{ vars }{ lc( $name ) } = $node;
     return '';
