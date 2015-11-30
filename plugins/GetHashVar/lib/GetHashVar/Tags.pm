@@ -50,6 +50,77 @@ sub _hdlr_unset_vars {
     $build;
 }
 
+sub _hdlr_mb_set_var {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ name };
+    my $value = $args->{ value };
+    if ( (! $name ) && (! $value ) ) {
+        return '';
+    }
+    $name =~ s!^\\!!;
+    $value =~ s!^\\!!;
+    if ( $name =~ m!^\$(.*$)! ) {
+        my $_name = $ctx->{ __stash }{ vars }{ $1 };
+        $_name = $ctx->{ __stash }{ vars }{ lc( $1 ) } unless $_name;
+        $name = $_name;
+    }
+    if ( $value =~ m!^\$(.*$)! ) {
+        my $_value = $ctx->{ __stash }{ vars }{ $1 };
+        $_value = $ctx->{ __stash }{ vars }{ lc( $1 ) } unless $_value;
+        $value = $_value;
+    }
+    $ctx->stash( 'tag', 'SetVar' );
+    $args->{ name } = $name;
+    $args->{ value } = $value;
+    require MT::Template::Context;
+    MT::Template::Tags::Core::_hdlr_set_var( $ctx, $args, $cond );
+    return '';
+}
+
+sub _hdlr_mb_get_var {
+    my ( $ctx, $args, $cond ) = @_;
+    my $name = $args->{ name };
+    if (! $name ) {
+        return '';
+    }
+    $name =~ s!^\\!!;
+    if ( $name =~ m!^\$(.*$)! ) {
+        my $_name = $ctx->{ __stash }{ vars }{ $1 };
+        $_name = $ctx->{ __stash }{ vars }{ lc( $1 ) } unless $_name;
+        $name = $_name;
+    }
+    $ctx->stash( 'tag', 'GetVar' );
+    $args->{ name } = $name;
+    require MT::Template::Context;
+    MT::Template::Tags::Core::_hdlr_get_var( $ctx, $args, $cond );
+}
+
+sub _hdlr_mb_if {
+    my ( $ctx, $args, $cond ) = @_;
+    while ( my ( $key, $value ) = each %$args ) {
+        if ( $key ne '@' ) {
+            my $_value = $value;
+            $_value =~ s!^\\!!;
+            if ( $_value =~ m!^\$(.*$)! ) {
+                $_value = $ctx->{ __stash }{ vars }{ $1 };
+                $_value = $ctx->{ __stash }{ vars }{ lc( $1 ) } unless $_value;
+                $args->{ $key } = $_value;
+            }
+        }
+    }
+    require MT::Template::Context;
+    if ( $ctx->this_tag eq 'mtmbif' ) {
+        return MT::Template::Tags::Core::_hdlr_if( $ctx, $args, $cond );
+    } elsif ( $ctx->this_tag eq 'mtmbunless' ) {
+        return MT::Template::Tags::Core::_hdlr_unless( $ctx, $args, $cond );
+    } elsif ( $ctx->this_tag eq 'mtmbelseif' ) {
+        return MT::Template::Tags::Core::_hdlr_elseif( $ctx, $args, $cond );
+    } elsif ( $ctx->this_tag eq 'mtmbelse' ) {
+        return MT::Template::Tags::Core::_hdlr_else( $ctx, $args, $cond );
+    }
+    return undef;
+}
+
 sub _hdlr_local_vars {
     my ( $ctx, $args, $cond ) = @_;
     my $vars = $ctx->{ __stash }{ vars } ||= {};

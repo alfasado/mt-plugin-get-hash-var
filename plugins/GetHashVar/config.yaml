@@ -22,6 +22,10 @@ tags:
         IfVarIsScalar?: $gethashvar::GetHashVar::Tags::_hdlr_is_scalar
         IfVarIsArray?: $gethashvar::GetHashVar::Tags::_hdlr_is_array
         IfVarIsHash?: $gethashvar::GetHashVar::Tags::_hdlr_is_hash
+        MBIf?: $gethashvar::GetHashVar::Tags::_hdlr_mb_if
+        MBUnless?: $gethashvar::GetHashVar::Tags::_hdlr_mb_if
+        MBElseIf: $gethashvar::GetHashVar::Tags::_hdlr_mb_if
+        MBElse: $gethashvar::GetHashVar::Tags::_hdlr_mb_if
     function:
         GetHashVar: $gethashvar::GetHashVar::Tags::_hdlr_get_hash_var
         GetHashKey: $gethashvar::GetHashVar::Tags::_hdlr_get_hash_key
@@ -52,6 +56,9 @@ tags:
         SetPublishedEntryIds: $gethashvar::GetHashVar::Tags::_hdlr_set_published_entry_ids
         SetPublishedPageIds: $gethashvar::GetHashVar::Tags::_hdlr_set_published_entry_ids
         USleep: $gethashvar::GetHashVar::Tags::_hdlr_usleep
+        MBSetVar: $gethashvar::GetHashVar::Tags::_hdlr_mb_set_var
+        MBVar: $gethashvar::GetHashVar::Tags::_hdlr_mb_get_var
+        MBGetVar: $gethashvar::GetHashVar::Tags::_hdlr_mb_get_var
     modifier:
         json2vars: $gethashvar::GetHashVar::Tags::_filter_json2vars
         vars2json: $gethashvar::GetHashVar::Tags::_filter_vars2json
