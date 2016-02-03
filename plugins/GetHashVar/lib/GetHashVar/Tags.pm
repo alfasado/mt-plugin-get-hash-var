@@ -158,6 +158,11 @@ sub _hdlr_loop_with_sort {
     my ( $ctx, $args, $cond ) = @_;
     my $name = $args->{ 'name' } || return '';
     my $kind = $args->{ kind } || 'numeric';
+    if ( $kind eq 'num' ) {
+        $kind = 'numeric';
+    } elsif ( $kind eq 'str' ) {
+        $kind = 'string';
+    }
     my $scope = $args->{ scope } || 'key';
     if ( $scope eq 'value' ) {
         $scope = 'var';
@@ -174,37 +179,37 @@ sub _hdlr_loop_with_sort {
             for my $key ( sort keys %$array ) {
                 push ( @vars, { $key => $array->{ $key } } );
             }
-        } elsif ( ( $kind eq 'str' ) &&
+        } elsif ( ( $kind eq 'string' ) &&
             ( $scope eq 'key' ) && ( $order eq 'descend' ) ) {
             for my $key ( sort { $b cmp $a } keys %$array ) {
                 push ( @vars, { $key => $array->{ $key } } );
             }
-        } elsif ( ( $kind eq 'str' ) &&
+        } elsif ( ( $kind eq 'string' ) &&
             ( $scope eq 'var' ) && ( $order eq 'ascend' ) ) {
             for my $key ( sort { $array->{ $a } cmp $array->{ $b } } keys %$array ) {
                 push ( @vars, { $key => $array->{ $key } } );
             }
-        } elsif ( ( $kind eq 'str' ) &&
+        } elsif ( ( $kind eq 'string' ) &&
             ( $scope eq 'var' ) && ( $order eq 'descend' ) ) {
             for my $key ( sort { $array->{ $b } cmp $array->{ $a } } keys %$array ) {
                 push ( @vars, { $key => $array->{ $key } } );
             }
-        } elsif ( ( $kind eq 'num' ) &&
+        } elsif ( ( $kind eq 'numeric' ) &&
             ( $scope eq 'key' ) && ( $order eq 'ascend' ) ) {
             for my $key ( sort { $a <=> $b } keys %$array ) {
                 push ( @vars, { $key => $array->{ $key } } );
             }
-        } elsif ( ( $kind eq 'num' ) &&
+        } elsif ( ( $kind eq 'numeric' ) &&
             ( $scope eq 'key' ) && ( $order eq 'descend' ) ) {
             for my $key ( sort { $a <=> $b } keys %$array ) {
                 push ( @vars, { $key => $array->{ $key } } );
             }
-        } elsif ( ( $kind eq 'num' ) &&
+        } elsif ( ( $kind eq 'numeric' ) &&
             ( $scope eq 'var' ) && ( $order eq 'ascend' ) ) {
             for my $key ( sort { $array->{ $a } <=> $array->{ $b } } keys %$array ) {
                 push ( @vars, { $key => $array->{ $key } } );
             }
-        } elsif ( ( $kind eq 'num' ) &&
+        } elsif ( ( $kind eq 'numeric' ) &&
             ( $scope eq 'var' ) && ( $order eq 'descend' ) ) {
             foreach my $key ( sort { $array->{ $b } <=> $array->{ $a } } keys %$array ) {
                 push ( @vars, { $key => $array->{ $key } } );
@@ -216,13 +221,13 @@ sub _hdlr_loop_with_sort {
         }
     } elsif ( ( ref $array ) eq 'ARRAY' ) {
         @vars = @$array;
-        if ( ( $kind eq 'str' ) && ( $order eq 'ascend' ) ) {
+        if ( ( $kind eq 'string' ) && ( $order eq 'ascend' ) ) {
             @vars = sort { $a cmp $b } @vars;
-        } elsif ( ( $kind eq 'str' ) && ( $order eq 'descend' ) ) {
+        } elsif ( ( $kind eq 'string' ) && ( $order eq 'descend' ) ) {
             @vars = sort { $b cmp $a } @vars;
-        } elsif ( ( $kind eq 'num' ) && ( $order eq 'ascend' ) ) {
+        } elsif ( ( $kind eq 'numeric' ) && ( $order eq 'ascend' ) ) {
             @vars = sort { $a <=> $b } @vars;
-        } elsif ( ( $kind eq 'num' ) && ( $order eq 'descend' ) ) {
+        } elsif ( ( $kind eq 'numeric' ) && ( $order eq 'descend' ) ) {
             @vars = sort { $b <=> $a } @vars;
         }
     }

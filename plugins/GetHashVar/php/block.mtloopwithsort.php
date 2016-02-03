@@ -14,6 +14,11 @@ function smarty_block_mtloopwithsort ( $args, $content, &$ctx, &$repeat ) {
         }
         if (! $kind ) {
             $kind = 'numeric';
+        } 
+        if ( $kind == 'num' ) {
+            $kind = 'numeric';
+        } else if ( $kind == 'str' ) {
+            $kind = 'string';
         }
         $strcmp = NULL;
         if ( $kind == 'string' ) {
