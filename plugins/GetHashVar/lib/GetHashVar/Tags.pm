@@ -457,7 +457,7 @@ sub _hdlr_array_join {
     my $array = $ctx->stash( 'vars' )->{ $name };
     $array = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $array;
     if ( ( ref $array ) eq 'ARRAY' ) {
-        return join( $glue, $array );
+        return join( $glue, @$array );
     }
     return '';
 }
