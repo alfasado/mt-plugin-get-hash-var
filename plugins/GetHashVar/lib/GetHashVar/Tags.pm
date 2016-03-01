@@ -453,11 +453,11 @@ sub _hdlr_get_hash_key {
 sub _hdlr_array_join {
     my ( $ctx, $args, $cond ) = @_;
     my $name = $args->{ 'name' } || return '';
-    my $glue  = $args->{ 'glue ' } || '';
+    my $glue  = $args->{ 'glue' } || '';
     my $array = $ctx->stash( 'vars' )->{ $name };
     $array = $ctx->stash( 'vars' )->{ lc ( $name ) } unless $array;
     if ( ( ref $array ) eq 'ARRAY' ) {
-        return join( $glue, $array );
+        return join( $glue, @$array );
     }
     return '';
 }
